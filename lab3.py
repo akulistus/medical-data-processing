@@ -1,7 +1,6 @@
 import numpy as np
 import fisher_func
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris
 
 
 #Пример
@@ -17,15 +16,12 @@ from sklearn.datasets import load_iris
 # plt.show()
 
 #Задние
-data = load_iris()
-X = data.data
-Y = data.target
-Y_str = data.target_names
 
 prty_1 = 2
 prty_2 = 3
 
 iris_data = fisher_func.get_irises()
+Y_str = iris_data.keys()
 
 fig, (ax1,ax2,ax3) = plt.subplots(1,3)
 ax1.scatter(iris_data["setosa"][:,prty_1],iris_data["setosa"][:,prty_2])
