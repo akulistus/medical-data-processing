@@ -1,5 +1,5 @@
 import numpy as np
-import fisher_func
+import src.fisher_func as fisher_func
 import matplotlib.pyplot as plt
 
 
