@@ -24,9 +24,8 @@ w = W/np.linalg.norm(W)
 
 proj_class1 = np.matmul(data_class1, w)
 proj_class2 = np.matmul(data_class2, w)
-
-print(proj_class1)
-hist_data = np.hstack((proj_class1, proj_class2))
+print(proj_class1.reshape(1,50))
+hist_data = np.hstack((proj_class1.reshape(50,1), proj_class2.reshape(50,1)))
 print(hist_data)
 plt.hist(hist_data)
 plt.show()
