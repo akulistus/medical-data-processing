@@ -16,7 +16,6 @@ def create_squared_array(a:int = -5, b:int = 3, c:int = 5, N:int = 500) -> tuple
     
     return (x,res)
 
-
 def lin_reg(x,y):
     b1 = (np.mean(x*y) - np.mean(x)*np.mean(y))/(np.mean(x**2)-np.mean(x)**2)
     b0 = np.mean(y) - b1*np.mean(x)
@@ -26,6 +25,20 @@ def lin_reg(x,y):
 
 def remains(y_norm: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
     return y_norm - y_pred
+
+def SSE(y_norm: np.ndarray, y_pred: np.ndarray) -> float:
+    tmp = (y_norm - y_pred)**2
+    return sum(tmp)
+
+def SST(y_norm: np.ndarray, y_pred: np.ndarray) -> float:
+    y_mean = np.mean(y_norm)
+    tmp = (y_pred - y_mean)**2
+    return sum(tmp)
+
+def R_squared(y_norm: np.ndarray, y_pred: np.ndarray) -> float:
+    _SSE = SSE(y_norm, y_pred)
+    _SST = SST(y_norm, y_pred)
+    return 1 -(_SSE/_SST)
 
 def RSS(e:np.ndarray) -> float:
     tmp = e**2
@@ -37,15 +50,18 @@ def SpirmenCoeff(x: np.ndarray, e: np.ndarray):
     n = len(x)
     d = []
 
-    # FIXME
     for i in range(n):
-        d.append(rx.index(x[i]) - re.index(e[i]))
+        ind_rx = rx.index(x[i])
+        ind_re = re.index(e[i])
+        d.append(ind_rx - ind_re)
+        rx[ind_rx] = None
+        re[ind_re] = None
+        
     d = np.array(d)
     d = d ** 2
     r = 1-(6*sum(d)/(n*((n**2)-1)))
     t = r*np.sqrt(n-2)/np.sqrt(1-r**2)
     return np.abs(t)
-
 
 def GoldfeldQuandtTest(e: np.ndarray, k: int) -> float:
     k_1 = e[:k]
