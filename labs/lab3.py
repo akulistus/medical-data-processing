@@ -44,7 +44,7 @@ for name in Y_str:
 
     flower_mean = (np.mean(data_1), np.mean(data_2))
     flower_std = (np.std(data_1), np.std(data_2))
-    flower_xcor = np.corrcoef(data_1, data_1)
+    flower_xcor = np.corrcoef(data_1, data_2)
     flowers_info[name] = [flower_mean, flower_std, flower_xcor]
 
 fig, (ax1, ax2) = plt.subplots(1, 2)

@@ -1,42 +1,45 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from random import randrange
+import src.funcs as f
 
-
-def create_linear_array(b_0:int = 5, b_1:int = 3, N:int = 500) -> tuple:
-    x_r = np.random.randint(1,10, size=N)
-    x = np.cumsum(x_r)
-    err = np.random.randn(N) * 1000
-    res = b_0 + b_1 * x + err
-
-    return(x, res)
-
-def create_squared_array(a:int = -5, b:int = 3, c:int = 5, N:int = 500) -> tuple:
-    x_r = np.random.randint(1,10, size=N)
-    x = np.cumsum(x_r)
-    print(x)
-    err = np.random.randn(N) * 1000000
-    res = a*(x**2) +b*x + c + err
-    
-    return (x,res)
-
-
-def lin_reg(x,y):
-    b1 = (np.mean(x*y) - np.mean(x)*np.mean(y))/(np.mean(x**2)-np.mean(x)**2)
-    b0 = np.mean(y) - b1*np.mean(x)
-    lenreg_y = b0 + b1*x
-    
-    return lenreg_y
-
-
-x, y= create_linear_array()
-lenreg_y = lin_reg(x,y)
+x, y= f.create_linear_array()
+lenreg_y = f.lin_reg(x,y)
+e = f.remains(y, lenreg_y)
+sse = round(f.SSE(y, lenreg_y),2)
+R_sq = round(f.R_squared(y, lenreg_y),2)
+# RSS = f.RSS(e)
+gold = f.GoldfeldQuandtTest(e, 125)
+spir = f.SpirmenCoeff(x, e)
+print("Тест ранговой корреляции Спирмена: {}\nТест Голдфелда Квандта {}".format(spir, gold))
 plt.scatter(x,y, c='#00ced1')
 plt.plot(x,lenreg_y,  c='#ff1493')
+plt.title(f"{sse=},{R_sq=}")
 plt.show()
 
-x, y= create_squared_array()
-lenreg_y = lin_reg(x,y)
+fig, (ax1,ax2,ax3) = plt.subplots(1, 3)
+ax1.scatter(x,y, c='#00ced1')
+ax1.plot(x,lenreg_y,  c='#ff1493')
+ax2.scatter(x,e, c='#00ced1')
+ax3.hist(e)
+plt.show()
+
+
+x, y= f.create_squared_array()
+lenreg_y = f.lin_reg(x,y)
+e = f.remains(y, lenreg_y)
+sse = round(f.SSE(y, lenreg_y),2)
+R_sq = round(f.R_squared(y, lenreg_y),2)
+# RSS = f.RSS(e)
+gold = f.GoldfeldQuandtTest(e, 125)
+spir = f.SpirmenCoeff(x, e)
+print("Тест ранговой корреляции Спирмена: {}\nТест Голдфелда Квандта {}".format(spir, gold))
 plt.scatter(x,y, c='#00ced1')
 plt.plot(x,lenreg_y,  c='#ff1493')
+plt.title(f"{sse=},{R_sq=}")
+plt.show()
+
+fig, (ax1,ax2,ax3) = plt.subplots(1, 3)
+ax1.scatter(x,y, c='#00ced1')
+ax1.plot(x,lenreg_y,  c='#ff1493')
+ax2.scatter(x,e, c='#00ced1')
+ax3.hist(e)
 plt.show()
