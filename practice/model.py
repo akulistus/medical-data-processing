@@ -24,7 +24,6 @@ class LogitRegression():
 
         return self
 
-
     def fit(self, X, Y):
         self.m, self.n = X.shape
         self.W = np.ones((1, self.n))
