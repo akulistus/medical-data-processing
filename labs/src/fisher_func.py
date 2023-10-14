@@ -13,4 +13,4 @@ def get_irises() -> dict:
         flower_data = X[np.ravel(flower_inds), :]
         iris_data[name] = flower_data
 
-    return iris_data
+    return iris_data, Y

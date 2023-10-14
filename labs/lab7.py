@@ -1,5 +1,76 @@
+import numpy as np
 import src.fisher_func as f
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import  train_test_split
+from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
+import matplotlib.pyplot as plt
+import sklearn.metrics as metr
 
-iris_data = f.get_irises()
+iris_data, Y = f.get_irises()
+data_setosa= preprocessing.normalize(iris_data['setosa'])
+data_versicolor= preprocessing.normalize(iris_data['versicolor'])
+data_virginica= preprocessing.normalize(iris_data['virginica'])
+X = np.vstack((data_virginica,data_versicolor, data_setosa))
+Y = Y.reshape(150,1)
+
+x02 = np.hstack((X[:,0].reshape(150,1),X[:,2].reshape(150,1)))
+x03 = np.hstack((X[:,0].reshape(150,1),X[:,3].reshape(150,1)))
+x13 = np.hstack((X[:,1].reshape(150,1),X[:,3].reshape(150,1)))
+x12 = np.hstack((X[:,1].reshape(150,1),X[:,2].reshape(150,1)))
+x23 = np.hstack((X[:,2].reshape(150,1),X[:,3].reshape(150,1)))
+X_train4, X_test4, y_train4, y_test4 = train_test_split(X, Y, random_state=1)
+X_train_01, X_test_01, y_train_01, y_test_01 = train_test_split(X[:,0:2], Y, random_state=1)
+X_train_02, X_test_02, y_train_02, y_test_02 = train_test_split(x02, Y, random_state=1)
+X_train_03, X_test_03, y_train_03, y_test_03 = train_test_split(x03, Y, random_state=1)
+X_train_12, X_test_12, y_train_12, y_test_12 = train_test_split(x12, Y, random_state=1)
+X_train_13, X_test_13, y_train_13, y_test_13 = train_test_split(x13, Y, random_state=1)
+X_train_23, X_test_23, y_train_23, y_test_23 = train_test_split(x23, Y, random_state=1)
+knn70 = KNeighborsClassifier(n_neighbors=70, metric='euclidean')
+knn2 = KNeighborsClassifier(n_neighbors=2, metric='euclidean')
+knn5 = KNeighborsClassifier(n_neighbors=5, metric='euclidean')
+knn20 = KNeighborsClassifier(n_neighbors=20, metric='euclidean')
+h2 = knn2.fit(X_train_01, y_train_01.ravel())
+h5 = knn5.fit(X_train_12, y_train_12.ravel())
+h20 = knn20.fit(X_train_23, y_train_23.ravel())
+h70 = knn70.fit(X_train_03, y_train_03.ravel())
+
+s1 = h2.predict(X_test_01)
+s2 = h5.predict(X_test_01)
+s3 = h20.predict(X_test_01)
+s4 = h70.predict(X_test_01)
+
+fig2, ax1 = plt.subplots(2, 2)
+ax1[0,0].hist(s1)
+ax1[0,0].hist(y_test_01)
+ax1[0,1].hist(s2)
+ax1[0,1].hist(y_test_01)
+ax1[1,0].hist(s3)
+ax1[1,0].hist(y_test_01)
+ax1[1,1].hist(s4)
+ax1[1,1].hist(y_test_01)
+
+fig, ax = plt.subplots(3, 2)
+ax[0,0].scatter(data_setosa[:,0], data_setosa[:,1])
+ax[0,0].scatter(data_versicolor[:,0], data_versicolor[:,1])
+ax[0,0].scatter(data_virginica[:,0], data_virginica[:,1])
+ax[0,1].scatter(data_setosa[:,0], data_setosa[:,2])
+ax[0,1].scatter(data_versicolor[:,0], data_versicolor[:,2])
+ax[0,1].scatter(data_virginica[:,0], data_virginica[:,2])
+ax[1,0].scatter(data_setosa[:,0], data_setosa[:,3])
+ax[1,0].scatter(data_versicolor[:,0], data_versicolor[:,3])
+ax[1,0].scatter(data_virginica[:,0], data_virginica[:,3])
+ax[2,0].scatter(data_setosa[:,1], data_setosa[:,3])
+ax[2,0].scatter(data_versicolor[:,1], data_versicolor[:,3])
+ax[2,0].scatter(data_virginica[:,1], data_virginica[:,3])
+ax[1,1].scatter(data_setosa[:,1], data_setosa[:,2])
+ax[1,1].scatter(data_versicolor[:,1], data_versicolor[:,2])
+ax[1,1].scatter(data_virginica[:,1], data_virginica[:,2])
+ax[2,1].scatter(data_setosa[:,3], data_setosa[:,2])
+ax[2,1].scatter(data_versicolor[:,3], data_versicolor[:,2])
+ax[2,1].scatter(data_virginica[:,3], data_virginica[:,2])
+plt.show()
+
+ac_2 = metr.accuracy_score(y_test_01, s1)
+re_2 = metr.recall_score(y_test_01,s1, average='micro')
+pr_2 = metr.precision_score(y_test_01,s1,  average='macro')
+print(ac_2, re_2, pr_2)
