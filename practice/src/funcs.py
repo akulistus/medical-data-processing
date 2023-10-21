@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 def create_linear_array(b_0:int = 5, b_1:int = 3, N:int = 500) -> tuple:
     x_r = np.random.randint(1,10, size=N)
@@ -67,3 +68,31 @@ def GoldfeldQuandtTest(e: np.ndarray, k: int) -> float:
     k_1 = e[:k]
     k_2 = e[len(e)-k:]
     return RSS(k_2)/RSS(k_1)
+
+def normalize(Odata:np.ndarray):
+    Cdata = Odata[:]
+    for i in range(Cdata.shape[1]-1):
+        tmp = Cdata[:,i]
+        mean = np.mean(tmp)
+        std = np.std(tmp)
+        Cdata[:, i] = (tmp - mean)/std
+    return Cdata
+
+def split(data:np.ndarray, percent:int = 0.8):
+    data_copy = data[:]
+    np.random.shuffle(data_copy)
+    percent = int(len(data_copy)*0.8)
+    train = data_copy[0:percent,:]
+    test = data_copy[percent:,:]
+
+    train_X = train[:,0:4]
+    ones = np.ones((len(train_X),1))
+    train_X = np.hstack((train_X, ones))
+    train_Y = np.where(train[:,4] == 1, 1, 0)
+
+    test_X = test[:,0:4]
+    ones = np.ones((len(test_X),1))
+    test_X = np.hstack((test_X, ones))
+    test_Y = np.where(test[:,4] == 1, 1, 0)
+
+    return train_X, train_Y, test_X, test_Y
