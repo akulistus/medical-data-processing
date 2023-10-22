@@ -51,21 +51,24 @@ model.fit(normalize(train_X), train_Y, normalize(test_X), test_Y)
 train_pred = model.predict(normalize(train_X))
 test_pred = model.predict(normalize(test_X))
 
-plt.plot(model.loss)
-plt.plot(model.val_loss)
+plt.plot(model.loss, label = "Train")
+plt.plot(model.val_loss, label = "Test")
 plt.xlabel("Epochs")
 plt.ylabel("Loss")
+plt.legend()
 plt.show()
-plt.plot(model.acc_loss)
-plt.plot(model.acc_val_loss)
+plt.plot(model.acc_loss, label = "Train")
+plt.plot(model.acc_val_loss, label = "Test")
 plt.xlabel("Epochs")
 plt.ylabel("Acc")
+plt.legend()
 plt.show()
-class_0 = test_pred.ravel()[np.where(test_Y == 0)[0]]
-class_1 = test_pred.ravel()[np.where(test_Y == 1)[0]]
+class_0 = train_pred.ravel()[np.where(train_Y == 0)[0]]
+class_1 = train_pred.ravel()[np.where(train_Y == 1)[0]]
 
 sns.histplot(class_0, legend=False, bins=25)
 sns.histplot(class_1, legend=False, bins=25)
 plt.show()
 
-# print(accuracy_score, recall_score, precision_score)
+print(accuracy_score(train_Y, np.where( train_pred.ravel() > 0.5, 1, 0)), recall_score(train_Y, np.where( train_pred.ravel() > 0.5, 1, 0)), precision_score(train_Y, np.where( train_pred.ravel() > 0.5, 1, 0)), "\n")
+print(accuracy_score(test_Y, np.where( test_pred.ravel() > 0.5, 1, 0)), recall_score(test_Y, np.where( test_pred.ravel() > 0.5, 1, 0)), precision_score(test_Y, np.where( test_pred.ravel() > 0.5, 1, 0)))
