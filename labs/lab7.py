@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, recall_score, precision_score
 
 iris_data, Y = f.get_irises()
-data_setosa= preprocessing.normalize(iris_data['setosa'])
-data_versicolor= preprocessing.normalize(iris_data['versicolor'])
-data_virginica= preprocessing.normalize(iris_data['virginica'])
-X = np.vstack((data_virginica,data_versicolor, data_setosa))
+data_setosa=iris_data['setosa']
+data_versicolor= iris_data['versicolor']
+data_virginica= iris_data['virginica']
+X =  preprocessing.normalize(np.vstack((data_virginica,data_versicolor, data_setosa)))
 Y = Y.reshape(150,1)
 
 fig, ax = plt.subplots(3, 2)
