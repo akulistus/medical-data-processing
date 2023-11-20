@@ -20,7 +20,8 @@ class LogitRegression():
     def update_weights(self, X, Y):
         res = self.sigmoid(X)
         Y_T = Y.T
-        self.loss.append((-1/self.m)*(np.sum((Y_T*np.log(res)) + ((1-Y_T))*(np.log(1-res)))))
+        eps=0
+        self.loss.append((-1/self.m)*(np.sum((Y_T*np.log(res+eps)) + ((1-Y_T))*(np.log(1-res+eps)))))
 
         dW = (1/self.m)*np.matmul(X.T, (res - Y.T).T)
 
@@ -35,7 +36,8 @@ class LogitRegression():
         k, p = X.shape
         res = self.sigmoid(X)
         Y_T = Y.T
-        self.val_loss.append((-1/k)*(np.sum((Y_T*np.log(res)) + ((1-Y_T))*(np.log(1-res)))))
+        eps=0
+        self.val_loss.append((-1/k)*(np.sum((Y_T*np.log(res+eps)) + ((1-Y_T))*(np.log(1-res+eps)))))
 
         res = np.where( res > 0.5, 1, 0)
 
@@ -55,3 +57,6 @@ class LogitRegression():
         return Y
         # return np.where( Y > 0.5, 1, 0)
 
+# class Fisher():
+#     def __init__(self) -> None:
+        
