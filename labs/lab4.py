@@ -2,7 +2,7 @@ import numpy as np
 import src.fisher_func as fisher_func
 import matplotlib.pyplot as plt
 
-iris_data = fisher_func.get_irises()
+iris_data, Y = fisher_func.get_irises()
 
 class1 = "versicolor"
 class2 = "setosa"

@@ -4,7 +4,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from normalizer import Normalizer
-from log_model import LogitRegression, Fisher
+from models import LogitRegression, Fisher
 from sklearn.decomposition._pca import PCA
 from sklearn.model_selection import train_test_split
 
@@ -72,14 +72,14 @@ ax.scatter(train_normalized_base["param_10"],
 plt.show()
 
 #Histograms
-# f.plot_hist(train_normalized_no_corr)
+f.plot_hist(train_normalized_no_corr)
 
 #add column of ones
-#added as func
+train_normalized_no_corr_ones, test_normalized_no_corr_ones = f.add_ones(train_normalized_no_corr, test_normalized_no_corr)
 
-#Log_reg
-LogReg = LogitRegression(learning_rate=0.01, iterations=30000)
-LogReg.fit(np.array(train_normalized_no_corr), np.array(train_Y), np.array(test_normalized_no_corr), np.array(test_Y))
+# Log_reg
+LogReg = LogitRegression(learning_rate=0.01, iterations=10000)
+LogReg.fit(np.array(train_normalized_no_corr_ones), np.array(train_Y), np.array(test_normalized_no_corr_ones), np.array(test_Y))
 plt.plot(LogReg.acc_loss, label = "Train")
 plt.plot(LogReg.acc_val_loss, label = "Test")
 plt.xlabel("Epochs")
@@ -87,6 +87,10 @@ plt.ylabel("Acc")
 plt.legend()
 plt.show()
 
-#Fisher
-fish = Fisher(learning_rate=0.01)
+# Fisher
+fish = Fisher()
 fish.fit(train_normalized_no_corr, train_Y)
+proj1, proj2 = fish.predict(train_normalized_no_corr, train_Y)
+plt.hist(proj1)
+plt.hist(proj2)
+plt.show()

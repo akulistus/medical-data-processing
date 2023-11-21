@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 def delete_corr(data_train:pd.DataFrame, data_test:pd.DataFrame, threshold:float) -> pd.DataFrame:
@@ -13,6 +14,7 @@ def delete_corr(data_train:pd.DataFrame, data_test:pd.DataFrame, threshold:float
     return data_train, data_test
 
 def plot_hist(data:pd.DataFrame):
+    sns.set()
     for i in data.columns:
         fig, ax = plt.subplots(4,4)
         rows = 0
@@ -21,8 +23,8 @@ def plot_hist(data:pd.DataFrame):
             if cols == 4:
                 rows += 1
                 cols = 0
-            ax[rows,cols].hist(data[f"{i}"])
-            ax[rows,cols].hist(data[f"{j}"])
+            ax[rows,cols].hist(data[f"{i}"], alpha = 0.5)
+            ax[rows,cols].hist(data[f"{j}"], alpha = 0.5)
             ax[rows,cols].set_title(f"{i}, {j}")
             cols += 1
         plt.show()
