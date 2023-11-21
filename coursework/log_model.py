@@ -1,4 +1,6 @@
 import numpy as np
+import pandas as pd
+import funcs as f
 from sklearn.preprocessing import normalize
 from sklearn.metrics import accuracy_score
 
@@ -57,6 +59,29 @@ class LogitRegression():
         return Y
         # return np.where( Y > 0.5, 1, 0)
 
-# class Fisher():
-#     def __init__(self) -> None:
+class Fisher():
+    def __init__(self, learning_rate:float) -> None:
+        self.learning_rate = learning_rate
+        self.W = None
+    
+    def fit(self, data_X:pd.DataFrame, data_Y:pd.DataFrame):
+        class_1 = data_X[data_Y == 1]*(-1)
+        class_2 = data_X[data_Y == 0]
+        new_dataframe = pd.concat([class_1, class_2])
+        f.add_zeors()
+        self.W = np.zeros((new_dataframe.shape[0],1))
+
+        data_X = np.array(new_dataframe)
+        projections = np.matmul(data_X, self.W)
+        while min(projections) < 0:
+            for ind, data_sample in enumerate(data_X):
+                projections[ind] = np.matmul(data_sample, self.W)
+                if self.projections[ind] < 0:
+                    self.W = self.W + data_sample * self.learning_rate
+            projections = np.matmul(data_X, self.W)
+
+        return self
         
+    def predict(self, data_X:pd.DataFrame,):
+        data = np.array(data_X)
+        return np.matmul(data, self.W)

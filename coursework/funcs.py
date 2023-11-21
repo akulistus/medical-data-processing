@@ -31,3 +31,9 @@ def split_result(data:pd.DataFrame) -> pd.DataFrame:
     data_Y = data["class"]
     data_X = data.drop(columns=["class"], axis=1)
     return data_X, data_Y
+
+def add_ones(train_X:pd.DataFrame, test_X:pd.DataFrame):
+    train_X = train_X.assign(ones = pd.Series(np.ones(train_X.shape[0])).values)
+    test_X = test_X.assign(ones = pd.Series(np.ones(test_X.shape[0])).values)
+
+    return train_X, test_X

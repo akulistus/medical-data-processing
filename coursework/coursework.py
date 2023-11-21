@@ -4,7 +4,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from normalizer import Normalizer
-from log_model import LogitRegression
+from log_model import LogitRegression, Fisher
 from sklearn.decomposition._pca import PCA
 from sklearn.model_selection import train_test_split
 
@@ -19,6 +19,9 @@ data = pd.read_csv('./coursework/var_14.txt', sep=" ", names=header)
 train, test = train_test_split(data, train_size=0.8, shuffle=True, stratify=data["class"])
 train_X, train_Y = f.split_result(train)
 test_X, test_Y = f.split_result(test)
+
+print(test[test_Y == 1]*(-1))
+print(test)
 
 #Normalize data
 norm = Normalizer()
@@ -72,11 +75,7 @@ plt.show()
 # f.plot_hist(train_normalized_no_corr)
 
 #add column of ones
-train_normalized_base = train_normalized_base.assign(ones = pd.Series(np.ones(train_normalized_base.shape[0])).values)
-test_normalized_base = test_normalized_base.assign(ones = pd.Series(np.ones(test_normalized_base.shape[0])).values)
-
-train_normalized_no_corr = train_normalized_no_corr.assign(ones = pd.Series(np.ones(train_normalized_no_corr.shape[0])).values)
-test_normalized_no_corr = test_normalized_no_corr.assign(ones = pd.Series(np.ones(test_normalized_no_corr.shape[0])).values)
+#added as func
 
 #Log_reg
 LogReg = LogitRegression(learning_rate=0.01, iterations=30000)
@@ -87,3 +86,7 @@ plt.xlabel("Epochs")
 plt.ylabel("Acc")
 plt.legend()
 plt.show()
+
+#Fisher
+fish = Fisher(learning_rate=0.01)
+fish.fit(train_normalized_no_corr, train_Y)
