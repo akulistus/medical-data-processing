@@ -1,7 +1,5 @@
 import numpy as np
 import pandas as pd
-import funcs as f
-from sklearn.preprocessing import normalize
 from sklearn.metrics import accuracy_score
 
 class LogitRegression():
@@ -9,20 +7,16 @@ class LogitRegression():
     def __init__(self, learning_rate, iterations):
         self.learning_rate = learning_rate
         self.iterations = iterations
-        self.loss = []
-        self.acc_loss = []
-        self.val_loss = []
-        self.acc_val_loss = []
     
     def sigmoid(self, X):
         Z = np.matmul(self.W, X.T)
-        sigm = 1/(1+np.exp(-Z))
+        sigm = np.exp(Z) / (1 + np.exp(Z))
         return sigm
     
     def update_weights(self, X, Y):
         res = self.sigmoid(X)
         Y_T = Y.T
-        eps=0
+        eps=1e-8
         self.loss.append((-1/self.m)*(np.sum((Y_T*np.log(res+eps)) + ((1-Y_T))*(np.log(1-res+eps)))))
 
         dW = (1/self.m)*np.matmul(X.T, (res - Y.T).T)
@@ -38,7 +32,7 @@ class LogitRegression():
         k, p = X.shape
         res = self.sigmoid(X)
         Y_T = Y.T
-        eps=0
+        eps=1e-8
         self.val_loss.append((-1/k)*(np.sum((Y_T*np.log(res+eps)) + ((1-Y_T))*(np.log(1-res+eps)))))
 
         res = np.where( res > 0.5, 1, 0)
@@ -48,6 +42,10 @@ class LogitRegression():
     def fit(self, X, Y, val_X, val_Y):
         self.m, self.n = X.shape
         self.W = np.ones((1, self.n))
+        self.loss = []
+        self.acc_loss = []
+        self.val_loss = []
+        self.acc_val_loss = []
 
         for _ in range(self.iterations):
             self.update_val_loss(val_X, val_Y)
@@ -75,10 +73,13 @@ class Fisher():
         self.W = np.matmul(np.linalg.inv(sum_covariance), diff_mean)
         self.W = self.W/np.linalg.norm(self.W)
         return self
-        
+    
     def predict(self, data_X:pd.DataFrame, data_Y:pd.DataFrame):
         class_1 = np.array(data_X[data_Y == 1])
         class_2 = np.array(data_X[data_Y == 0])
         class_1 = np.matmul(class_1, self.W)
         class_2 = np.matmul(class_2, self.W)
         return class_1, class_2
+    
+    def _find_threashold(self,):
+        pass

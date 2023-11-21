@@ -13,25 +13,29 @@ def delete_corr(data_train:pd.DataFrame, data_test:pd.DataFrame, threshold:float
 
     return data_train, data_test
 
-def plot_hist(data:pd.DataFrame):
+def plot_hist(data_X:pd.DataFrame, data_Y:pd.DataFrame):
+    class_1 = data_X[data_Y == 1]
+    class_2 = data_X[data_Y == 0]
+
     sns.set()
-    for i in data.columns:
-        fig, ax = plt.subplots(4,4)
-        rows = 0
-        cols = 0
-        for j in data.columns:
-            if cols == 4:
-                rows += 1
-                cols = 0
-            ax[rows,cols].hist(data[f"{i}"], alpha = 0.5)
-            ax[rows,cols].hist(data[f"{j}"], alpha = 0.5)
-            ax[rows,cols].set_title(f"{i}, {j}")
-            cols += 1
-        plt.show()
+    fig, ax = plt.subplots(4,4)
+    rows = 0
+    cols = 0
+    for j in class_1.columns:
+        if cols == 4:
+            rows += 1
+            cols = 0
+        ax[rows,cols].hist(class_1[f"{j}"], alpha = 0.5)
+        ax[rows,cols].hist(class_2[f"{j}"], alpha = 0.5)
+        ax[rows,cols].set_title(f"{j}")
+        cols += 1
+    
+    plt.show()
 
 def split_result(data:pd.DataFrame) -> pd.DataFrame:
     data_Y = data["class"]
     data_X = data.drop(columns=["class"], axis=1)
+
     return data_X, data_Y
 
 def add_ones(train_X:pd.DataFrame, test_X:pd.DataFrame):
