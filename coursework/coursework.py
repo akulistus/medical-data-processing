@@ -142,9 +142,18 @@ plt.show()
 
 # Fisher
 fish = Fisher()
-# fig, ax = plt.subplots(2,3)
+fig, ax = plt.subplots(1,3)
+print(train_Y)
+print(train_PCA[train_Y == 1])
+fish.fit(train_PCA, train_Y)
+res = fish.predict(test_PCA)
+ax[0].hist(res)
+
+fish.fit(train_normalized_base, train_Y_normalized)
+res = fish.predict(test_normalized_base)
+ax[1].hist(res)
+
 fish.fit(train_normalized_no_corr, train_Y_normalized)
-proj1, proj2 = fish.predict(train_normalized_no_corr, train_Y_normalized)
-plt.hist(proj1)
-plt.hist(proj2)
+res = fish.predict(test_normalized_no_corr)
+ax[2].hist(res)
 plt.show()
