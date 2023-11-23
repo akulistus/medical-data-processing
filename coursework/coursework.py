@@ -1,13 +1,15 @@
 import funcs as f
 import numpy as np
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+from fisher import Fisher
 from normalizer import Normalizer
-from models import LogitRegression, Fisher
+from log_reg import LogitRegression
 from sklearn.decomposition._pca import PCA
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from forward_selection import ForwardSelection
+from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import SequentialFeatureSelector
 
 #Create header row
 header = []
