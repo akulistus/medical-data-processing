@@ -7,6 +7,7 @@ from normalizer import Normalizer
 from models import LogitRegression, Fisher
 from sklearn.decomposition._pca import PCA
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 #Create header row
 header = []
@@ -52,9 +53,11 @@ class_2 = train_X[train_Y == 0]
 class_1_PCA = pd.DataFrame(PCA_obj.transform(class_1))
 class_2_PCA = pd.DataFrame(PCA_obj.transform(class_2))
 train_PCA = pd.DataFrame(PCA_obj.transform(train_X))
+train_PCA.index = train_Y.index
 #cause np.exp can not handle large numbers
 train_PCA = train_PCA.divide(100)
 test_PCA = pd.DataFrame(PCA_obj.transform(test_X))
+test_PCA.index = test_Y.index
 test_PCA = test_PCA.divide(100)
 
 #Plot 3D scatter for three devidable feachers
@@ -143,17 +146,18 @@ plt.show()
 # Fisher
 fish = Fisher()
 fig, ax = plt.subplots(1,3)
-print(train_Y)
-print(train_PCA[train_Y == 1])
 fish.fit(train_PCA, train_Y)
 res = fish.predict(test_PCA)
 ax[0].hist(res)
+ax[0].set_title(f"{accuracy_score(test_Y, res)}")
 
 fish.fit(train_normalized_base, train_Y_normalized)
 res = fish.predict(test_normalized_base)
 ax[1].hist(res)
+ax[1].set_title(f"{accuracy_score(test_Y_normalized, res)}")
 
 fish.fit(train_normalized_no_corr, train_Y_normalized)
 res = fish.predict(test_normalized_no_corr)
 ax[2].hist(res)
+ax[2].set_title(f"{accuracy_score(test_Y_normalized, res)}")
 plt.show()
