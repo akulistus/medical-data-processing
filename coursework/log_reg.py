@@ -1,4 +1,5 @@
 import numpy as np
+from funcs import add_ones
 from sklearn.metrics import accuracy_score
 
 class LogitRegression():
@@ -39,6 +40,7 @@ class LogitRegression():
         self.acc_val_loss.append(accuracy_score(Y.ravel(), res.ravel()))
 
     def fit(self, X, Y, val_X, val_Y):
+        X, val_X = add_ones(X, val_X)
         self.m, self.n = X.shape
         self.W = np.ones((1, self.n))
         self.loss = []

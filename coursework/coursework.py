@@ -9,7 +9,6 @@ from sklearn.decomposition._pca import PCA
 from sklearn.metrics import accuracy_score
 from forward_selection import ForwardSelection
 from sklearn.model_selection import train_test_split
-from sklearn.feature_selection import SequentialFeatureSelector
 
 #Create header row
 header = []
@@ -96,15 +95,10 @@ plt.show()
 #Histograms
 f.plot_hist(train_normalized_no_corr, train_Y_normalized)
 
-#add column of ones
-train_normalized_no_corr_ones, test_normalized_no_corr_ones = f.add_ones(train_normalized_no_corr, test_normalized_no_corr)
-train_normalized_base_ones, test_normalized_base_ones = f.add_ones(train_normalized_base, test_normalized_base)
-train_PCA_ones, test_PCA_ones = f.add_ones(train_PCA, test_PCA)
-
 # Log_reg
 LogReg = LogitRegression(learning_rate=0.01, iterations=10000)
 fig, ax = plt.subplots(2,3)
-LogReg.fit(np.array(train_PCA_ones), np.array(train_Y), np.array(test_PCA_ones), np.array(test_Y))
+LogReg.fit(np.array(train_PCA), np.array(train_Y), np.array(test_PCA), np.array(test_Y))
 ax[0,0].plot(LogReg.acc_loss, label = "Train")
 ax[0,0].plot(LogReg.acc_val_loss, label = "Test")
 ax[0,0].set_xlabel("Epochs")
@@ -117,7 +111,7 @@ ax[1,0].set_xlabel("Epochs")
 ax[1,0].set_ylabel("Loss")
 ax[1,0].legend()
 
-LogReg.fit(np.array(train_normalized_base_ones), np.array(train_Y_normalized), np.array(test_normalized_base_ones), np.array(test_Y_normalized))
+LogReg.fit(np.array(train_normalized_base), np.array(train_Y_normalized), np.array(test_normalized_base), np.array(test_Y_normalized))
 ax[0,1].plot(LogReg.acc_loss, label = "Train")
 ax[0,1].plot(LogReg.acc_val_loss, label = "Test")
 ax[0,1].set_xlabel("Epochs")
@@ -130,7 +124,7 @@ ax[1,1].set_xlabel("Epochs")
 ax[1,1].set_ylabel("Loss")
 ax[1,1].legend()
 
-LogReg.fit(np.array(train_normalized_no_corr_ones), np.array(train_Y_normalized), np.array(test_normalized_no_corr_ones), np.array(test_Y_normalized))
+LogReg.fit(np.array(train_normalized_no_corr), np.array(train_Y_normalized), np.array(test_normalized_no_corr), np.array(test_Y_normalized))
 ax[0,2].plot(LogReg.acc_loss, label = "Train")
 ax[0,2].plot(LogReg.acc_val_loss, label = "Test")
 ax[0,2].set_xlabel("Epochs")
