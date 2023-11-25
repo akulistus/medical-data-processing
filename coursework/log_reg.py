@@ -40,7 +40,8 @@ class LogitRegression():
         self.acc_val_loss.append(accuracy_score(Y.ravel(), res.ravel()))
 
     def fit(self, X, Y, val_X, val_Y):
-        X, val_X = add_ones(X, val_X)
+        X = add_ones(X)
+        val_X = add_ones(val_X)
         self.m, self.n = X.shape
         self.W = np.ones((1, self.n))
         self.loss = []
@@ -53,7 +54,8 @@ class LogitRegression():
             self.update_weights(X, Y)
         return self
 
-    def predict(self, X):
+    def predict(self, X:np.ndarray):
+        X = add_ones(X)
         Y = self.sigmoid(X)
-        return Y
-        # return np.where( Y > 0.5, 1, 0)
+        # return Y
+        return np.where( Y > 0.5, 1, 0)

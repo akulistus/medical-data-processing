@@ -5,15 +5,14 @@ class Fisher():
     def __init__(self) -> None:
         self.W = None
     
-    def fit(self, data_X:pd.DataFrame, data_Y:pd.DataFrame):
-        class_1 = data_X[data_Y == 1]
-        class_2 = data_X[data_Y == 0]
-
-        class_1 = np.array(class_1)
-        class_2 = np.array(class_2)
+    def fit(self, data_X:np.ndarray, data_Y:np.ndarray):
+        class_1 = data_X[np.where(data_Y == 1)[0]]
+        class_2 = data_X[np.where(data_Y == 0)[0]]
         
         diff_mean = np.mean(class_1, axis=0) - np.mean(class_2, axis=0)
         sum_covariance = np.cov(class_1, rowvar=0) + np.cov(class_2, rowvar=0)
+        if sum_covariance.ndim < 1:
+            sum_covariance = np.array([[sum_covariance]])
         self.W = np.matmul(np.linalg.inv(sum_covariance), diff_mean)
         self.W = self.W/np.linalg.norm(self.W)
 
@@ -21,7 +20,7 @@ class Fisher():
 
         return self
     
-    def predict(self, data:pd.DataFrame):
+    def predict(self, data:np.ndarray):
         proj = np.matmul(data, self.W)
 
         return np.where(proj > self.threshold, 1, 0)

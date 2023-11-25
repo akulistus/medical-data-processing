@@ -38,10 +38,8 @@ def split_result(data:pd.DataFrame) -> pd.DataFrame:
 
     return data_X, data_Y
 
-def add_ones(train_X:np.ndarray, test_X:np.ndarray):
-    N = train_X.shape[0]
-    train_X = np.hstack((train_X, np.ones((N,1))))
-    N = test_X.shape[0]
-    test_X = np.hstack((test_X, np.ones((N,1))))
+def add_ones(data:np.ndarray):
+    N = data.shape[0]
+    data = np.hstack((data, np.ones((N,1))))
 
-    return train_X, test_X
+    return data

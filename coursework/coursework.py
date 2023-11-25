@@ -94,6 +94,9 @@ plt.show()
 
 #Histograms
 f.plot_hist(train_normalized_no_corr, train_Y_normalized)
+params = ["param_5", "param_11", "param_10","param_12","param_13"]
+train_normalized_base.drop(params, axis=1, inplace=True)
+test_normalized_base.drop(params, axis=1, inplace=True)
 
 # Log_reg
 LogReg = LogitRegression(learning_rate=0.01, iterations=10000)
@@ -142,18 +145,18 @@ plt.show()
 # Fisher
 fish = Fisher()
 fig, ax = plt.subplots(1,3)
-fish.fit(train_PCA, train_Y)
-res = fish.predict(test_PCA)
+fish.fit(np.array(train_PCA), np.array(train_Y))
+res = fish.predict(np.array(test_PCA))
 ax[0].hist(res)
 ax[0].set_title(f"{accuracy_score(test_Y, res)}")
 
-fish.fit(train_normalized_base, train_Y_normalized)
-res = fish.predict(test_normalized_base)
+fish.fit(np.array(train_normalized_base), np.array(train_Y_normalized))
+res = fish.predict(np.array(test_normalized_base))
 ax[1].hist(res)
 ax[1].set_title(f"{accuracy_score(test_Y_normalized, res)}")
 
-fish.fit(train_normalized_no_corr, train_Y_normalized)
-res = fish.predict(test_normalized_no_corr)
+fish.fit(np.array(train_normalized_no_corr), np.array(train_Y_normalized))
+res = fish.predict(np.array(test_normalized_no_corr))
 ax[2].hist(res)
 ax[2].set_title(f"{accuracy_score(test_Y_normalized, res)}")
 plt.show()

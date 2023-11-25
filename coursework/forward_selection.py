@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from log_reg import LogitRegression
 from sklearn.metrics import accuracy_score
 
 class ForwardSelection():
@@ -8,18 +9,25 @@ class ForwardSelection():
         self.n_features_to_select = n_features_to_select
         self.selected_features = []
 
-    def _train_model(self, X:pd.DataFrame, y:pd.DataFrame, val_X:pd.DataFrame = None, val_Y:pd.DataFrame = None):
-        self.estimator.fit(
-            np.array(X), 
-            np.array(y), 
-            np.array(val_X), 
-            np.array(val_Y)
-        )
+    def _train_model(self, X:pd.DataFrame, y:pd.DataFrame, *args):
 
-        return self.estimator.predict(val_X)
-            
+        if args:
+            val_X, val_Y = args
+            self.estimator.fit(
+                np.array(X), 
+                np.array(y), 
+                np.array(val_X), 
+                np.array(val_Y)
+            )
+        else:
+            self.estimator.fit(
+                np.array(X),
+                np.array(y)
+            )
+        
+        return self
 
-    def fit(self, X:pd.DataFrame, y:pd.DataFrame, val_X:pd.DataFrame = None, val_Y:pd.DataFrame = None):
+    def fit(self, X:pd.DataFrame, y:pd.DataFrame, val_X:pd.DataFrame, val_Y:pd.DataFrame):
 
         features = X.columns.values.tolist()
 
@@ -28,16 +36,20 @@ class ForwardSelection():
             best_feature = ""
             for feature in features:
 
+                if isinstance(self.estimator, LogitRegression):
+                    self._train_model(
+                        X[[feature]+self.selected_features],
+                        y,
+                        val_X[[feature]+self.selected_features],
+                        val_Y
+                    )
+                else:
+                    self._train_model(
+                        X[[feature]+self.selected_features],
+                        y
+                    )
 
-
-                predictions = self._train_model(
-                    X[[feature]+self.selected_features],
-                    y,
-                    val_X[[feature]+self.selected_features],
-                    val_Y
-                )
-
-                predictions = np.where( predictions > 0.5, 1, 0)
+                predictions = self.estimator.predict(np.array(val_X[[feature]+self.selected_features]))    
                 acc = accuracy_score(val_Y.ravel(), predictions.ravel())
 
                 if best_acc < acc:
