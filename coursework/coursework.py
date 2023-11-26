@@ -6,7 +6,7 @@ from fisher import Fisher
 from normalizer import Normalizer
 from log_reg import LogitRegression
 from sklearn.decomposition._pca import PCA
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, recall_score
 from forward_selection import ForwardSelection
 from sklearn.model_selection import train_test_split
 
@@ -64,8 +64,10 @@ test_PCA = test_PCA.divide(100)
 #Plot 3D scatter for three devidable feachers
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
-ax.scatter(class_1_PCA[0], class_1_PCA[1], class_1_PCA[2])
-ax.scatter(class_2_PCA[0], class_2_PCA[1], class_2_PCA[2])
+ax.scatter(class_1_PCA[0], class_1_PCA[1], class_1_PCA[2], label = "class_1")
+ax.scatter(class_2_PCA[0], class_2_PCA[1], class_2_PCA[2], label = "class_2")
+ax.set_title("PCA")
+ax.legend()
 plt.show()
 
 fig = plt.figure()
@@ -74,10 +76,12 @@ class_1 = train_normalized_no_corr[train_Y_normalized == 1]
 class_2 = train_normalized_no_corr[train_Y_normalized == 0]
 ax.scatter(class_1["param_10"],
                 class_1["param_14"],
-                class_1["param_15"])
+                class_1["param_15"], label = "class_1")
 ax.scatter(class_2["param_10"],
                 class_2["param_14"],
-                class_2["param_15"])
+                class_2["param_15"], label = "class_2")
+ax.set_title("train_normalized_no_corr")
+ax.legend()
 plt.show()
 
 fig = plt.figure()
@@ -86,10 +90,12 @@ class_1 = train_normalized_base[train_Y_normalized == 1]
 class_2 = train_normalized_base[train_Y_normalized == 0]
 ax.scatter(class_1["param_10"],
                 class_1["param_14"],
-                class_1["param_15"])
+                class_1["param_15"], label = "class_1")
 ax.scatter(class_2["param_10"],
                 class_2["param_14"],
-                class_2["param_15"])
+                class_2["param_15"], label = "class_2")
+ax.set_title("train_normalized_base")
+ax.legend()
 plt.show()
 
 #Histograms
@@ -106,7 +112,13 @@ ax[0,0].plot(LogReg.acc_loss, label = "Train")
 ax[0,0].plot(LogReg.acc_val_loss, label = "Test")
 ax[0,0].set_xlabel("Epochs")
 ax[0,0].set_ylabel("Acc")
+ax[0,0].set_title("PCA")
 ax[0,0].legend()
+pred_train = LogReg.predict(np.array(train_PCA))
+pred_test = LogReg.predict(np.array(test_PCA))
+print(accuracy_score(train_Y.ravel(), pred_train.ravel()), recall_score(train_Y.ravel(), pred_train.ravel()), recall_score(train_Y.ravel(), pred_train.ravel(), pos_label=0),"\n")
+print(accuracy_score(test_Y.ravel(), pred_test.ravel()), recall_score(test_Y.ravel(), pred_test.ravel()), recall_score(test_Y.ravel(), pred_test.ravel(), pos_label=0),"\n")
+
 
 ax[1,0].plot(LogReg.loss, label = "Train")
 ax[1,0].plot(LogReg.val_loss, label = "Test")
@@ -114,12 +126,18 @@ ax[1,0].set_xlabel("Epochs")
 ax[1,0].set_ylabel("Loss")
 ax[1,0].legend()
 
+
 LogReg.fit(np.array(train_normalized_base), np.array(train_Y_normalized), np.array(test_normalized_base), np.array(test_Y_normalized))
 ax[0,1].plot(LogReg.acc_loss, label = "Train")
 ax[0,1].plot(LogReg.acc_val_loss, label = "Test")
 ax[0,1].set_xlabel("Epochs")
 ax[0,1].set_ylabel("Acc")
+ax[0,1].set_title("base")
 ax[0,1].legend()
+pred_train = LogReg.predict(np.array(train_normalized_base))
+pred_test = LogReg.predict(np.array(test_normalized_base))
+print(accuracy_score(train_Y_normalized.ravel(), pred_train.ravel()), recall_score(train_Y_normalized.ravel(), pred_train.ravel()), recall_score(train_Y_normalized.ravel(), pred_train.ravel(), pos_label=0),"\n")
+print(accuracy_score(test_Y_normalized.ravel(), pred_test.ravel()), recall_score(test_Y_normalized.ravel(), pred_test.ravel()), recall_score(test_Y_normalized.ravel(), pred_test.ravel(), pos_label=0),"\n")
 
 ax[1,1].plot(LogReg.loss, label = "Train")
 ax[1,1].plot(LogReg.val_loss, label = "Test")
@@ -132,7 +150,12 @@ ax[0,2].plot(LogReg.acc_loss, label = "Train")
 ax[0,2].plot(LogReg.acc_val_loss, label = "Test")
 ax[0,2].set_xlabel("Epochs")
 ax[0,2].set_ylabel("Acc")
+ax[0,2].set_title("no_corr")
 ax[0,2].legend()
+pred_train = LogReg.predict(np.array(train_normalized_no_corr))
+pred_test = LogReg.predict(np.array(test_normalized_no_corr))
+print(accuracy_score(train_Y_normalized.ravel(), pred_train.ravel()), recall_score(train_Y_normalized.ravel(), pred_train.ravel()), recall_score(train_Y_normalized.ravel(), pred_train.ravel(), pos_label=0),"\n")
+print(accuracy_score(test_Y_normalized.ravel(), pred_test.ravel()), recall_score(test_Y_normalized.ravel(), pred_test.ravel()), recall_score(test_Y_normalized.ravel(), pred_test.ravel(), pos_label=0),"\n")
 
 ax[1,2].plot(LogReg.loss, label = "Train")
 ax[1,2].plot(LogReg.val_loss, label = "Test")
@@ -148,15 +171,30 @@ fig, ax = plt.subplots(1,3)
 fish.fit(np.array(train_PCA), np.array(train_Y))
 res = fish.predict(np.array(test_PCA))
 ax[0].hist(res)
-ax[0].set_title(f"{accuracy_score(test_Y, res)}")
+ax[0].set_title(f"{accuracy_score(test_Y, res)}, PCA")
+print("Fisher\n")
+pred_train = fish.predict(np.array(train_PCA))
+pred_test = fish.predict(np.array(test_PCA))
+print(accuracy_score(train_Y.ravel(), pred_train.ravel()), recall_score(train_Y.ravel(), pred_train.ravel()), recall_score(train_Y.ravel(), pred_train.ravel(), pos_label=0),"\n")
+print(accuracy_score(test_Y.ravel(), pred_test.ravel()), recall_score(test_Y.ravel(), pred_test.ravel()), recall_score(test_Y.ravel(), pred_test.ravel(), pos_label=0),"\n")
+
 
 fish.fit(np.array(train_normalized_base), np.array(train_Y_normalized))
 res = fish.predict(np.array(test_normalized_base))
 ax[1].hist(res)
-ax[1].set_title(f"{accuracy_score(test_Y_normalized, res)}")
+ax[1].set_title(f"{accuracy_score(test_Y_normalized, res)}, base")
+pred_train = fish.predict(np.array(train_normalized_base))
+pred_test = fish.predict(np.array(test_normalized_base))
+print(accuracy_score(train_Y_normalized.ravel(), pred_train.ravel()), recall_score(train_Y_normalized.ravel(), pred_train.ravel()), recall_score(train_Y_normalized.ravel(), pred_train.ravel(), pos_label=0),"\n")
+print(accuracy_score(test_Y_normalized.ravel(), pred_test.ravel()), recall_score(test_Y_normalized.ravel(), pred_test.ravel()), recall_score(test_Y_normalized.ravel(), pred_test.ravel(), pos_label=0),"\n")
+
 
 fish.fit(np.array(train_normalized_no_corr), np.array(train_Y_normalized))
 res = fish.predict(np.array(test_normalized_no_corr))
 ax[2].hist(res)
-ax[2].set_title(f"{accuracy_score(test_Y_normalized, res)}")
+ax[2].set_title(f"{accuracy_score(test_Y_normalized, res)}, no_corr")
+pred_train = fish.predict(np.array(train_normalized_no_corr))
+pred_test = fish.predict(np.array(test_normalized_no_corr))
+print(accuracy_score(train_Y_normalized.ravel(), pred_train.ravel()), recall_score(train_Y_normalized.ravel(), pred_train.ravel()), recall_score(train_Y_normalized.ravel(), pred_train.ravel(), pos_label=0),"\n")
+print(accuracy_score(test_Y_normalized.ravel(), pred_test.ravel()), recall_score(test_Y_normalized.ravel(), pred_test.ravel()), recall_score(test_Y_normalized.ravel(), pred_test.ravel(), pos_label=0),"\n")
 plt.show()
