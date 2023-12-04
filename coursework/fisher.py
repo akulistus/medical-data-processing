@@ -20,10 +20,14 @@ class Fisher():
 
         return self
     
-    def predict(self, data:np.ndarray):
+    def predict(self, data:np.ndarray, norm:bool = True):
         proj = np.matmul(data, self.W)
 
-        return np.where(proj > self.threshold, 1, 0)
+        if norm:
+            return np.where(proj > self.threshold, 1, 0)
+        else:
+            return proj
+            
     
     def _find_threshold(self, class_1:np.ndarray, class_2:np.ndarray):
         proj1 = np.matmul(class_1, self.W)

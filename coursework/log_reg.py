@@ -54,8 +54,10 @@ class LogitRegression():
             self.update_weights(X, Y)
         return self
 
-    def predict(self, X:np.ndarray):
+    def predict(self, X:np.ndarray, norma:bool = True):
         X = add_ones(X)
         Y = self.sigmoid(X)
-        # return Y
-        return np.where( Y > 0.5, 1, 0)
+        if norma:
+            return np.where( Y > 0.5, 1, 0)
+        else:
+            return Y
